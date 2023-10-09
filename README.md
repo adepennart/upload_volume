@@ -20,18 +20,18 @@ https://www.thermofisher.com/se/en/home/electron-microscopy/products/software-em
 ### ImageJ
 Open up Image J.
 
-Upload your image stack on ImageJ, from which you are segmenting from, using File>Import>Image Sequence...
+Upload your image stack on ImageJ, where you are segmenting from, using "File>Import>Image Sequence..."
 
 A window should appear.
-On the first line click the Browse button and select the folder with your images of interest (ensure only your images are in this folder).
-On step: line change it to 10 and the Scale line to 10%.
-then click OK on the bottom right.
+On the first line click the "Browse" button and select the folder with your images of interest (ensure only your images are in this folder).
+On the "step:" line change it to 10 and on the "Scale" line to 10%.
+then click "OK" on the bottom right.
 
 The images will take a while to all load.
 
-Once loaded, export your images by going to File>Save As>Tiff...
+Once loaded, export your images by going to "File>Save As>Tiff..."
 
-select where you would like your new image stack (saved under one tiff file) to be saved, name it and click save. 
+select where you would like your new image stack (saved under one tiff file) to be saved, name it and click "save". 
 
 Now you can move over to Amira.
 
@@ -41,21 +41,31 @@ Now you can move over to Amira.
 Please refer to the brain reconstruction manual below on inputting data into and using Amira to segment. 
 https://drive.google.com/drive/folders/1PHDAv1DZ8f6XFOtu5dSZG-CVusRvxKJy?usp=sharing
 
-Note: After opening Amira, correct voxel size in order to have correct dimensions in Catmaid. I.e., for dung beetle CX overview image stack voxel sizes are x,y,z=40,40,50.
-FIX 400,500,500
+Note: After opening Amira, correct voxel size in order to have correct dimensions in Catmaid. I.e., for dung beetle CX overview image stack voxel sizes are x,y,z=40,40,50 but increase it by a factor of 10 to 400,400,500 as we downsampled it in ImageJ.
 #### exporting
-FIX create isosurface
 Before exporting, save your Amira project. Then, for every volume within your segmentation save a copy of your Amira Project. In each project remove all volumes except one unique volume to each project. In this way, each export will have only one unique volume (no simpler step currently made)(information on saving and deleting can be found from the link above).
 
-Then, go to the object pool tab and click on your label object.
-A surfaceGen button will appear and click on it.
+Depending on if you made your volumes solely with Amira or also with Biomedisa, the following steps differ.
+##### Solely Amira
+skip if Biomedisa was used.
+Go to the object pool tab and click on your label object.
+A Isosurface button will appear (above right in your window), click on it.
+Next, a new Isosurface object will appear, click on it and below in the properties window click the green Apply button. This may take some time.
+
+Go to your Isosurface object a SurfaceGen object will appear (above right in your window), click on it. Next, a new surfaceGen object will appear, click on it and below in the properties window click the green Apply button. This may take some time.
+
+##### Biomedisa
+Go to the object pool tab and click on your label object.
+A surfaceGen button will appear (above right in your window), click on it.
 Next, a new surfaceGen object will appear, click on it and below in the properties window click the green Apply button. This may take some time.
 
-Then, a new object should be created with the same name as your label but finishing with .surf. Click on the new object and at the top a button called SurfaceView should appear. Click on it to see what your surface object looks like. It is likely the surface object will be too large to export so beside Simplify in the prorperties window reduce the number of faces by a factor of 10 (remove a zero). Click perserve slice structure checkmark and click Simplify now. Once finished simplifying, this should be seen by a a reduction of faces on your surface object in the viewer you can now export.
+##### exporting (cont.)
+Then, a new object should be created with the same name as your label but finishing with .surf. Click on the new object and at the top a button called SurfaceView should appear. Click on it to see what your surface object looks like. It is likely the surface object will be too large to export so beside Simplify in the properties window reduce the number of faces by a factor of 10 (remove a zero). Click perserve slice structure checkmark and click Simplify now (simplyfing should be seen by a a reduction of faces on your surface object in the viewer). Once simplified you can now export.
 
 Right click on the surface object and click Save Data As...
 Choose where you would like the object to be saved and the name and make sure to change the file format to STL ascii (.stl).
-Repeat these steps for all volumes of interest and then you are ready for upload to Catmaid.
+
+Repeat these steps for all volumes of interest.
 
 ## Part 2: uploading neuropils to catmaid
 ## Before starting
@@ -64,14 +74,14 @@ A **Catmaid account** is needed for this code.
 
 Before downloading this repository it should be stated that without a Catmaid account following the instructions below becomes obsolete.
 
+This code is run on the terminal.
 ## Installation
 This program can be directly installed from github (green Code button, top right).
 
 Make sure to change into the downloaded directory, the code should resemble something like this.
 
-***check***
 ```bash=
-cd Downloads/neuron_print
+cd Downloads/upload_volume
 ```
 
 ### Conda environment
@@ -133,12 +143,8 @@ The script should be all ready to run.
 #change permissions in catmaid
 The code can be run as follows (most arguments are optional, see below).
 ```bash=
-    python plot_pymaid.py [-h] [-v] -i PROJECT_ID
-                      (-j JSON | -n NEURON [NEURON ...]) [-J] [-a]
-                      [-c COLOUR [COLOUR ...]] [-V VOLUME [VOLUME ...]]
-                      [-C VOLUME_COLOUR [VOLUME_COLOUR ...]]
-                      [-p PERSPECTIVE PERSPECTIVE PERSPECTIVE] [-o OUTPUT]
-                      [-s]
+   python upload_volume.py [-h] [-v] -p PROJECT_ID -i INPUTFILE [-n NAME]
+                        [-r RESIZE] [-s]
 ```
 The help page can be accessed with the -h or --help flag
 ```bash=
@@ -150,107 +156,34 @@ The program version can be accessed with the -v or --version flag
 python plot_pymaid.py -v
 python plot_pymaid.py --version
 ```
-There are two required arguments for running this program, PROJECT_ID and JSON or PROJECT_ID and NEURON. PROJECT_ID specifies which species stack you are looking for neurons in. JSON is a json file with neurons of interest and NEURON are neurons of interest directly typed out to the terminal.
+There are two required arguments for running this program, PROJECT_ID and INPUTFILE. PROJECT_ID specifies which species stack you are uploading your volume to. INPUTFILE is the volume file of interest to uplaod.
 ```bash=
-python plot_pymaid.py -i PROJECT_ID -j JSON
-python plot_pymaid.py -i PROJECT_ID -n NEURON
+python plot_pymaid.py -p PROJECT_ID -i example_input.stl
 ```
 
 The following arguments are optional.
 
-JSON_COLOUR, when user-specified neuron colours are not wanted (only useable with JSON).
+NAME, name on catmaid for volume.
 ```bash=
-python plot_pymaid.py -i PROJECT_ID -j JSON -J
+python plot_pymaid.py -p PROJECT_ID -i example_input.stl -n example_name
 ```
-ANNOTATION, when annotations are how you are looking for neurons as opposed to by name (only useable with NEURON).
+RESIZE, specificed resize factor (i.e., input 10, 10 times larger).
 ```bash=
-python plot_pymaid.py -i PROJECT_ID -n NEURON -a
+python plot_pymaid.py -p PROJECT_ID -i example_input.stl -r
 ```
-
-VOLUME, when you want to depict volumes in your plot.
+Finally, -s, to show the volume before upload.
 ```bash=
-python plot_pymaid.py -i PROJECT_ID -j JSON -V VOLUME
-python plot_pymaid.py -i PROJECT_ID -n NEURON -V VOLUME
-```
-COLOUR and VOLUME_COLOUR, when you want to have a specific colour for the neurons and the volumes respectively (COLOUR, only useable with NEURON). Only accepts colours as RBG (ie. 1,0,0,0.1).
-```bash=
-python plot_pymaid.py -i PROJECT_ID -n NEURON -c COLOUR
-
-python plot_pymaid.py -i PROJECT_ID -j JSON -V VOLUME -C VOLUME_COLOUR
-python plot_pymaid.py -i PROJECT_ID -n NEURON -V VOLUME -C VOLUME_COLOUR
-```                      
-PERSPECTIVE, when you want a specific view of the neurons in your plot. Only accepts 3 arguments: zoom, rotation around y-axis and rotation around x-axis.
-```bash=
-python plot_pymaid.py -i PROJECT_ID -j JSON -p PERSPECTIVE
-python plot_pymaid.py -i PROJECT_ID -n NEURON -p PERSPECTIVE
-```
-OUTPUT, a output plot will be created with the specified file name.
-```bash=
-python plot_pymaid.py -i PROJECT_ID -j JSON -o OUTPUT
-python plot_pymaid.py -i PROJECT_ID -n NEURON -o OUTPUT
-```
-Finally, NO_SHOW, when you don't want your plot displayed to screen.
-```bash=
-python plot_pymaid.py -i PROJECT_ID -j JSON -s
-python plot_pymaid.py -i PROJECT_ID -n NEURON -s
+python plot_pymaid.py -p PROJECT_ID -i example_input.stl -s
 ```
 
 ### Example inputs
 
-If interested in all E-PG neurons in your project and example input could be the following. 
+If you would like to upload to the the "galenus" project the CX volume. 
 ```bash=
-python3 plot_pymaid.py -i 8 -n EPG 
+python3 plot_pymaid.py -p 15 -i input/galenus_CX.stl 
 ```
 
-If a json file has been produced from Catmaid with all your neurons of interest it could be used as follows.
+If you would like to upload to the the "galenus" project the CX volume, name it CX, resize it by a factor of 10 and show it before upload. 
 ```bash=
-python3 plot_pymaid.py -i 8 -j example.json 
-```
-
-If the json file neuron colours are not to your liking, you can not use them.
-```bash=
-python3 plot_pymaid.py -i 8 -j example.json -J
-```
-
-Perhaps we are interested in seraching neurons by annotations.
-```bash=
-python3 plot_pymaid.py -i 11 -n EPG -a
-```
-
-Perhaps there are two type of neurons you are interested in.
-```bash=
-python3 plot_pymaid.py -i 8 -n EPG PEN
-```
-Distinguishing them with colour, might be useful.
-```bash=
-python3 plot_pymaid.py -i 8 -n EPG PEN -c 1,0,0 0,0,1
-```
-
-Why not a new perspective on the neurons.
-```bash=
-python3 plot_pymaid.py -i 8 -n EPG -p 6 -90 360
-```
-
-Could be interesting to visualize with a volume.
-```bash=
-python3 plot_pymaid.py -i 8 -n EPG -V EB
-```
-
-Why not two.
-```bash=
-python3 plot_pymaid.py -i 8 -n EPG -V EB PB
-```
-The colouring of the volumes are off, let's change it.
-```bash=
-python3 plot_pymaid.py -i 8 -n EPG -V EB PB -C 0,0,1,0.1 0,0,1,0.1
-```
-
-Taking into account all the options a final view could be created with this.
-```bash=
-python3 plot_pymaid.py -i 11 -n EPG PEN -a -V EB PB -p 7 300 310 -C 0,1,0,.2 0,1,0,0.2
-```
-
-If content with this final view, why not save it to output and save the hastle of showing it on the screen.
-```bash=
-python3 plot_pymaid.py -i 11 -n EPG PEN -a -V EB PB -p 7 300 310 -C 0,1,0,0.2 0,1,0,0.2 -o satisfied -s
+python3 plot_pymaid.py -p 15 -i input/galenus_CX.stl -n CX -r 10 -s
 ```
