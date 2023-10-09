@@ -59,7 +59,7 @@ Go to the object pool tab and click on your label object.
 A surfaceGen button will appear (above right in your window), click on it.
 Next, a new surfaceGen object will appear, click on it and below in the properties window click the green Apply button. This may take some time.
 
-##### exporting (cont.)
+#### exporting (cont.)
 Then, a new object should be created with the same name as your label but finishing with .surf. Click on the new object and at the top a button called SurfaceView should appear. Click on it to see what your surface object looks like. It is likely the surface object will be too large to export so beside Simplify in the properties window reduce the number of faces by a factor of 10 (remove a zero). Click perserve slice structure checkmark and click Simplify now (simplyfing should be seen by a a reduction of faces on your surface object in the viewer). Once simplified you can now export.
 
 Right click on the surface object and click Save Data As...
