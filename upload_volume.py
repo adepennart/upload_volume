@@ -92,7 +92,7 @@ parser.add_argument('-n', '--name_of_volume',
                     metavar='NAME',
                     dest='name',
                     nargs=1,
-                    help='user-specified Neuron(s) of interest. REGEX accepted.')
+                    help='user-specified name for volume.')
 #creates the argument where the plot perspective will be inputted
 parser.add_argument('-r', '--resize',
                     metavar='RESIZE',
